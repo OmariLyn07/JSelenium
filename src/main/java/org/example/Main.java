@@ -3,13 +3,17 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.time.Duration;
 import java.util.*;
 
@@ -21,6 +25,7 @@ public class Main {
 
         //Load Login Page
         driver.get("https://home.cunyfirst.cuny.edu/psp/cnyihprd/EMPLOYEE/SA/c/SCC_ADMIN_OVRD_STDNT.SSS_STUDENT_CENTER.GBL");
+        driver.manage().window().maximize();
 
         driver.manage().timeouts().implicitlyWait(Duration.ofMillis(1000));
 
@@ -34,14 +39,32 @@ public class Main {
         driver.findElement(By.xpath("//*[@id='submit']")).click();
 
         try{
-            driver.manage().timeouts().implicitlyWait(Duration.ofMillis(5000));
-            driver.findElement(By.cssSelector(""));
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#ptcp_pagetitle_spantext")));
 
+            driver.switchTo().frame(0);
+            driver.findElement(By.cssSelector("input[name='STDNT_SRCH_LAST_NAME_SRCH']")).sendKeys("Bright");
+            driver.findElement(By.cssSelector("input[name='STDNT_SRCH_FIRST_NAME_SRCH']")).sendKeys("Ashley");
+            driver.findElement(By.cssSelector("input[value='Search'][name='PTS_CFG_CL_WRK_PTS_SRCH_BTN']")).click();
 
-        }catch(Exception c){
-            System.out.println(c);
+            String dob = "07/17";
+            String real_emp = "24395551";
+            String emp = "";
+
+            WebElement elem = driver.findElement(By.id("tdgbrPTS_CFG_CL_STD_RSL$0"));
+            List<WebElement> elems = elem.findElements(By.tagName("tr"));
+
+            for(WebElement element : elems){
+                System.out.println(element.getText());
+            }
+
+            System.out.println(emp + ": " + dob + ", Ashley Bright");
 
         }
+        catch(Exception e){
+            System.out.println(e);
+        }
+
 
         //automation(driver);
 
@@ -51,10 +74,15 @@ public class Main {
         String Lname = "";
         String Fname = "";
         String DOB = "";
+        String emp = "";
         try{
+            //Reads Excel file and starts from sheet 1
             FileInputStream file = new FileInputStream("C:/Users/lynom/Desktop/Java Projects/RE-Selenium/TestSelenium/src/main/resources/Book1.xlsx");
             XSSFWorkbook book = new XSSFWorkbook(file);
             XSSFSheet sheet = book.getSheetAt(0);
+
+            //Create new Excel file with EmplIDs
+
 
             //Iterates through each row one by one
             Iterator<Row> rowIterator = sheet.iterator();
@@ -86,9 +114,15 @@ public class Main {
                     break;
 
                 }
-                driver.manage().timeouts().implicitlyWait(Duration.ofMillis(1000));
-                driver.findElement(By.name("STDNT_SRCH_LAST_NAME_SRCH")).sendKeys(Lname);
-                driver.findElement(By.name("STDNT_SRCH_LAST_NAME_SRCH")).sendKeys(Fname);
+                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+                wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#ptcp_pagetitle_spantext")));
+
+                driver.switchTo().frame(0);
+                driver.findElement(By.cssSelector("input[name='STDNT_SRCH_LAST_NAME_SRCH']")).sendKeys(Lname);
+                driver.findElement(By.cssSelector("input[name='STDNT_SRCH_FIRST_NAME_SRCH']")).sendKeys(Fname);
+                driver.findElement(By.cssSelector("input[value='Search'][name='PTS_CFG_CL_WRK_PTS_SRCH_BTN']")).click();
+
+
 
             }
 

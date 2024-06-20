@@ -28,10 +28,10 @@ public class Main {
 
         //Enter Login Credentials
         WebElement mouse = driver.findElement(By.xpath("//*[@id='CUNYfirstUsernameH']"));
-        mouse.sendKeys("omari.lyn02");
+        mouse.sendKeys("Insert UserName");
 
         mouse = driver.findElement(By.xpath("//*[@id='CUNYfirstPassword']"));
-        mouse.sendKeys("Dissidia97!");
+        mouse.sendKeys("Insert Password");
 
         driver.findElement(By.xpath("//*[@id='submit']")).click();
 
@@ -47,12 +47,12 @@ public class Main {
         String DOB = "";
         WebElement elem;
         List<WebElement> elems;
-        File output = new File("C:/Users/lynom/Desktop/NewBook.txt");
+        File output = new File("Path for output file");
 
 
         try{
             //Reads Excel file and starts from sheet 1
-            FileInputStream file = new FileInputStream("C:/Users/lynom/Desktop/Book1.xlsx");
+            FileInputStream file = new FileInputStream("Path for input file");
             XSSFWorkbook book = new XSSFWorkbook(file);
             XSSFSheet sheet = book.getSheetAt(3);
 
